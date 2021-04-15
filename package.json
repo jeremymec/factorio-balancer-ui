@@ -10,7 +10,8 @@
   "dependencies": {
     "next": "^10.0.0",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "factorio-balancer-generator": "file:../factorio-balancer-generator"
   },
   "devDependencies": {
     "@types/react": "^17.0.3",

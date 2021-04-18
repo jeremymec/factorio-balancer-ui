@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import React from 'react'
-import generate from '../factorio-balancer-generator'
+import generate from 'factorio-balancer-generator'
 
 export default function Home() {
   return (

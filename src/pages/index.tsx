@@ -23,7 +23,7 @@ export default function Home() {
 
   const handleWork = useCallback(async () => {
     //debugger
-    workerRef.current.postMessage({ inputs: 1, outputs: 1, splitters: 1 })
+    workerRef.current.postMessage({ inputs: 1, outputs: 2, splitters: 1 })
   }, [])
 
   return (
@@ -35,7 +35,7 @@ export default function Home() {
       <div>
         <button onClick={handleWork}>Hello</button>
       </div>
-      <MyComponent blueprint={blueprintJSON} />
+      {/* <MyComponent blueprint={blueprintJSON} /> */}
     </div>
   )
 }
@@ -46,7 +46,7 @@ let blueprintJSON = {
           {
               "signal": {
                   "type": "item",
-                  "name": "transport-belt"
+                  "name": "splitter"
               },
               "index": 1
           }
@@ -54,42 +54,38 @@ let blueprintJSON = {
       "entities": [
           {
               "entity_number": 1,
-              "name": "transport-belt",
+              "name": "splitter",
               "position": {
-                  "x": 19.5,
-                  "y": 9.5
+                  "x": 56.5,
+                  "y": -32
               },
               "direction": 2
-              RIGHT BELT
           },
           {
               "entity_number": 2,
-              "name": "transport-belt",
+              "name": "splitter",
               "position": {
-                  "x": 19.5,
-                  "y": 10.5
+                  "x": 56.5,
+                  "y": -30
               },
-              "direction": 4
-              DOWN BELT
+              "direction": 6
           },
           {
               "entity_number": 3,
-              "name": "transport-belt",
+              "name": "splitter",
               "position": {
-                  "x": 18.5,
-                  "y": 10.5
-              }
-              UP BELT
+                  "x": 57,
+                  "y": -27.5
+              },
+              "direction": 4
           },
           {
               "entity_number": 4,
-              "name": "transport-belt",
+              "name": "splitter",
               "position": {
-                  "x": 20.5,
-                  "y": 10.5
-              },
-              "direction": 2
-              RIGHT BELT
+                  "x": 57,
+                  "y": -25.5
+              }
           }
       ],
       "item": "blueprint",

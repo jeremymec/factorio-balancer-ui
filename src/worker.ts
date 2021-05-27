@@ -7,5 +7,5 @@ ctx.addEventListener('message', (event) => {
 
   const result = generate(3,3,4)
   console.log("Done")
-  ctx.postMessage(result)
+  ctx.postMessage(result.squares)
 })

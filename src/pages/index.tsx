@@ -1,6 +1,6 @@
 import Head from 'next/head'
-import React, { useEffect, useRef, useCallback } from 'react'
-import { MyComponent } from 'factorio-blueprint-renderer'
+import React, { useEffect, useRef, useCallback, useState } from 'react'
+import { RenderedBlueprint } from 'factorio-blueprint-renderer'
 
 interface BalancerParameters {
   inputs: number,
@@ -11,13 +11,25 @@ interface BalancerParameters {
 export default function Home() {
   const workerRef = useRef<Worker>()
 
+  // const [blueprintPayload, setBlueprintPayload] = useState({
+  //   blueprintData: undefined,
+  //   isLoading: true
+  // })
+
+  const [blueprintData, setBlueprintData] = useState(undefined)
+  const [blueprintLoading, setBlueprintLoading] = useState(true)
+
   useEffect(() => {
+    // console.log("########### EFFECT USED")
     workerRef.current = new Worker(new URL("../worker.ts", import.meta.url))
-    workerRef.current.onmessage = (evt) =>
-      alert(`WebWorker Response => ${evt.data}`)
+    workerRef.current.onmessage = (evt) => {
+      console.log("Sending blueprint")
+      setBlueprintData(evt.data)
+      setBlueprintLoading(false)
+    }
     workerRef.current.onerror = function (event) {
       throw new Error(event.message + " (" + event.filename + ":" + event.lineno + ")");
-    }
+    } 
   }
   )
 
@@ -35,60 +47,7 @@ export default function Home() {
       <div>
         <button onClick={handleWork}>Hello</button>
       </div>
-      {/* <MyComponent blueprint={blueprintJSON} /> */}
+      <RenderedBlueprint blueprintData = {blueprintData} isLoading = {blueprintLoading}/>
     </div>
   )
-}
-
-let blueprintJSON = {
-  "blueprint": {
-      "icons": [
-          {
-              "signal": {
-                  "type": "item",
-                  "name": "splitter"
-              },
-              "index": 1
-          }
-      ],
-      "entities": [
-          {
-              "entity_number": 1,
-              "name": "splitter",
-              "position": {
-                  "x": 56.5,
-                  "y": -32
-              },
-              "direction": 2
-          },
-          {
-              "entity_number": 2,
-              "name": "splitter",
-              "position": {
-                  "x": 56.5,
-                  "y": -30
-              },
-              "direction": 6
-          },
-          {
-              "entity_number": 3,
-              "name": "splitter",
-              "position": {
-                  "x": 57,
-                  "y": -27.5
-              },
-              "direction": 4
-          },
-          {
-              "entity_number": 4,
-              "name": "splitter",
-              "position": {
-                  "x": 57,
-                  "y": -25.5
-              }
-          }
-      ],
-      "item": "blueprint",
-      "version": 281479273840640
-  }
 }

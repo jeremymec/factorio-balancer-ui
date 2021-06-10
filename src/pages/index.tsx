@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useEffect, useRef, useCallback, useState } from 'react'
 import { RenderedBlueprint } from 'factorio-blueprint-renderer'
+import { Button, TextField, Container, Box, Grid } from '@material-ui/core'
 
 interface BalancerParameters {
   inputs: number,
@@ -29,7 +30,7 @@ export default function Home() {
     }
     workerRef.current.onerror = function (event) {
       throw new Error(event.message + " (" + event.filename + ":" + event.lineno + ")");
-    } 
+    }
   }
   )
 
@@ -44,10 +45,28 @@ export default function Home() {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
-        <button onClick={handleWork}>Hello</button>
-      </div>
-      <RenderedBlueprint blueprintData = {blueprintData} isLoading = {blueprintLoading}/>
+      <body>
+        <Container maxWidth="sm">
+          <Grid container spacing={3}>
+            <Grid container item>
+              <Box>
+                <form>
+                  <TextField id="standard-basic" label="Inputs" />
+                  <TextField id="standard-basic" label="Outputs" />
+                </form>
+              </Box>
+            </Grid>
+            <Grid container item>
+              <Box>
+                <Button variant="contained" color="primary" onClick={handleWork}>Generate</Button>
+              </Box>
+            </Grid>
+            <Grid item style={{flex: 1}}>
+              <RenderedBlueprint blueprintData={blueprintData} isLoading={blueprintLoading} />
+            </Grid>
+          </Grid>
+        </Container>
+      </body>
     </div>
   )
 }

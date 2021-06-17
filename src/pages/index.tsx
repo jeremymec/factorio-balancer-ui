@@ -2,68 +2,38 @@ import Head from 'next/head'
 import React, { useEffect, useRef, useCallback, useState } from 'react'
 import { RenderedBlueprint } from 'factorio-blueprint-renderer'
 import { Button, TextField, Container, Box, Grid, Input } from '@material-ui/core'
+import { Payload } from '../worker'
 
 
 export default function Home() {
-    // const workerRef = useRef<Worker[]>([]);
-
-    const [workers, setWorkers] = useState([])
+    const workerRef = useRef<Worker>()
 
     const [blueprintData, setBlueprintData] = useState(undefined);
     const [blueprintLoading, setBlueprintLoading] = useState(true);
     
     const [inputs, setInputs] = useState("");
     const [outputs, setOutputs] = useState("");
-    const [splitters, setSplitters] = useState("");
-
-    const workerCount = 10;
-
-    const workerKeepAlive = useRef(false);
 
     useEffect(() => {
-        for (let i = 0; i < workerCount; i++) {
-            const worker = new Worker(new URL("../worker.ts", import.meta.url));
-            setWorkers([worker])
-
-            worker.onmessage = (evt) => {
-                setBlueprintData(evt.data);
-                setBlueprintLoading(false);
-                workerKeepAlive.current = false;
-            }
-
-            worker.onerror = (evt) => {
-                throw new Error(evt.message + " (" + evt.filename + ":" + evt.lineno + ")");
-            }
+        workerRef.current = new Worker(new URL("../worker.ts", import.meta.url))
+        workerRef.current.onmessage = (evt) => {
+          console.log("Sending blueprint")
+          setBlueprintData(evt.data)
+          setBlueprintLoading(false)
         }
-        console.log("Workers" + workers)
-    }, [])
-
-    useEffect(() => {
-
-        const keepalive = () => {
-            if (workerKeepAlive.current) {
-                for (let i = 0; i < workerCount; i++) {
-                    console.log("Workers in keep alive" + workers)
-                    const worker = workers[i];
-                    worker.postMessage({
-                        payload: {
-                            inputs: Number(inputs),
-                            outputs: Number(outputs),
-                            splitters: Number(1 + i)
-                        }
-                    });
-                }
-            }
-
-            setTimeout(keepalive, 500);
-        };
-
-        setTimeout(keepalive, 500);
-    }, [workerKeepAlive.current]);
+        workerRef.current.onerror = function (event) {
+          throw new Error(event.message + " (" + event.filename + ":" + event.lineno + ")");
+        }
+      }, [blueprintLoading]
+    )
 
     function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        workerKeepAlive.current = true
+        const workerMessage: Payload = {
+            inputs: Number(inputs),
+            outputs: Number(outputs)
+        }
+        workerRef.current.postMessage(workerMessage)
     }
 
     return (
@@ -80,7 +50,6 @@ export default function Home() {
                                 <Box>
                                     <TextField id="standard-basic" label="Inputs" value={inputs} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setInputs(e.target.value)} />
                                     <TextField id="standard-basic" label="Outputs" value={outputs} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setOutputs(e.target.value)} />
-                                    <TextField id="standard-basic" label="Splitters" value={splitters} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setSplitters(e.target.value)} />
                                 </Box>
                             </Grid>
                             <Grid container item>

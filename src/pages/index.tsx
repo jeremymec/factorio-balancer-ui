@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import React, { useEffect, useRef, useCallback, useState } from 'react'
-import { RenderedBlueprint } from 'factorio-blueprint-renderer'
+import { RenderedGraph } from 'factorio-graph-display'
 import { Button, TextField, Container, Box, Grid, Input } from '@material-ui/core'
 import { Payload } from '../worker'
 
@@ -58,7 +58,8 @@ export default function Home() {
                                 </Box>
                             </Grid>
                             <Grid item style={{ flex: 1 }}>
-                                <RenderedBlueprint blueprintData={blueprintData} isLoading={blueprintLoading} />
+                                {/* <RenderedBlueprint blueprintData={blueprintData} isLoading={blueprintLoading} /> */}
+                                <RenderedGraph nodes={blueprintData} isLoading={blueprintLoading}></RenderedGraph>
                             </Grid>
                         </form>
                     </Grid>

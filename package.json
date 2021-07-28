@@ -12,10 +12,10 @@
     "@material-ui/core": "^4.11.4",
     "cross-env": "^7.0.3",
     "factorio-balancer": "file:../factorio-balancer-generator",
-    "factorio-blueprint-renderer": "file:../factorio-blueprint-renderer",
+    "factorio-graph-display": "file:../factorio-graph-display",
     "next": "^10.0.0",
-    "react": "file:../factorio-blueprint-renderer/node_modules/react",
-    "react-dom": "file:../factorio-blueprint-renderer/node_modules/react-dom"
+    "react": "file:../factorio-graph-display/node_modules/react",
+    "react-dom": "file:../factorio-graph-display/node_modules/react-dom"
   },
   "devDependencies": {
     "@types/react": "^17.0.3",

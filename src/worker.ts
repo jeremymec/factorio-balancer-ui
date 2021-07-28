@@ -1,4 +1,4 @@
-import generate from 'factorio-balancer'; 
+import { generateNodes } from 'factorio-balancer'; 
 
 const ctx: Worker = self as any;
 
@@ -15,7 +15,8 @@ ctx.addEventListener('message', (event) => {
   console.log("Inputs: " + inputs)
   console.log("Outputs: " + outputs)
 
-  const result = generate(inputs, outputs)
+  const result = generateNodes(2, 3, 6)
+  console.log(result)
   if (!!result) {
     ctx.postMessage(result);
   }

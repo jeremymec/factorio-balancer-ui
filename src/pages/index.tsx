@@ -1,25 +1,27 @@
 import Head from 'next/head'
-import React, { useEffect, useRef, useCallback, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { RenderedGraph } from 'factorio-graph-display'
-import { Button, TextField, Container, Box, Grid, Input } from '@material-ui/core'
+import { RenderedBlueprint } from 'factorio-blueprint-renderer'
+import { Button, TextField, Container, Box, Grid, Switch, FormControlLabel } from '@material-ui/core'
 import { Payload, Result } from '../worker'
 
 
 export default function Home() {
     const workerRef = useRef<Worker>()
 
-    const [blueprintData, setBlueprintData] = useState<Result>(null);
+    const [generationResult, setGenerationResult] = useState<Result>(null);
     const [blueprintLoading, setBlueprintLoading] = useState(false);
 
     const [inputs, setInputs] = useState("");
     const [outputs, setOutputs] = useState("");
     const [splitters, setSplitters] = useState("");
 
+    const [realisticRender, setRealisticRender] = useState(false);
+
     useEffect(() => {
         workerRef.current = new Worker(new URL("../worker.ts", import.meta.url))
         workerRef.current.onmessage = (evt) => {
-            console.log("Sending blueprint")
-            setBlueprintData(evt.data)
+            setGenerationResult(evt.data)
             setBlueprintLoading(false)
         }
         workerRef.current.onerror = function (event) {
@@ -53,29 +55,38 @@ export default function Home() {
                         justify="center"
                     >
                         <form onSubmit={handleFormSubmit}>
-                            <Grid
+                            <Grid style={{ display: "flex", justifyContent: "center" }}
                                 container
                                 item
                             >
-                                <Box m={3}>
+                                <Box m={4}>
                                     <TextField id="standard-basic" label="Inputs" value={inputs} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setInputs(e.target.value)} />
                                     <TextField id="standard-basic" label="Outputs" value={outputs} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setOutputs(e.target.value)} />
                                     <TextField id="standard-basic" label="Splitters" value={splitters} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setSplitters(e.target.value)} />
                                 </Box>
                             </Grid>
-                            <Grid container item>
-                                <Box>
-                                    <Button variant="contained" color="primary" type="submit" value="Submit">Generate</Button>
+                            <Grid container item style={{ display: "flex", justifyContent: "center" }}>
+                                <Box mt={4} mb={4}>
+                                    <Box mr={4}>
+                                        <Button variant="contained" color="primary" type="submit" value="Submit">Generate</Button>
+                                    </Box>
+                                    <FormControlLabel
+                                        control={<Switch size="small" checked={realisticRender} onChange={(e) => setRealisticRender(e.target.checked)} />}
+                                        label="Realistic Render" />
                                 </Box>
                             </Grid>
-                            <Grid container item style={{ overflow: "scroll", maxWidth: 1000 }}>
-                                {false &&
-                                    blueprintLoading
-                                    ? <h1>Loading</h1>
-                                    : !blueprintData?.isError
-                                        ? <RenderedGraph nodes={blueprintData.nodes}></RenderedGraph>
-                                        : <h1>An error has occured</h1>
-                                }
+                            <Grid container item style={{ overflow: "auto", maxWidth: 1000, backgroundColor: '#f0f0f0' }}>
+                                <Box>
+                                    {generationResult && (
+                                        blueprintLoading
+                                            ? <h1>Loading</h1>
+                                            : !generationResult?.isError
+                                                ? realisticRender
+                                                    ? <RenderedBlueprint blueprintData={generationResult.blueprint} isLoading={blueprintLoading}></RenderedBlueprint>
+                                                    : <RenderedGraph nodes={generationResult.nodes}></RenderedGraph>
+                                                : <h1>An error has occured</h1>
+                                    )}
+                                </Box>
                             </Grid>
                         </form>
                     </Grid>

@@ -13,6 +13,7 @@
     "cross-env": "^7.0.3",
     "factorio-balancer": "file:../factorio-balancer-generator",
     "factorio-graph-display": "file:../factorio-graph-display",
+    "factorio-blueprint-renderer": "file:../factorio-blueprint-renderer",
     "next": "^10.0.0",
     "react": "file:../factorio-graph-display/node_modules/react",
     "react-dom": "file:../factorio-graph-display/node_modules/react-dom"

@@ -1,4 +1,4 @@
-import { generateNodes, FactorioNode } from 'factorio-balancer'; 
+import { FactorioNode, Blueprint, generateBlueprint } from 'factorio-balancer'; 
 
 const ctx: Worker = self as any;
 
@@ -11,6 +11,7 @@ export interface Payload {
 export interface Result {
   isError: boolean,
   nodes: FactorioNode[]
+  blueprint: Blueprint
 }
 
 ctx.addEventListener('message', (event) => {
@@ -24,17 +25,15 @@ ctx.addEventListener('message', (event) => {
   console.log("Splitters: " + splitters)
 
   try {
-    const nodes = generateNodes(inputs, outputs, splitters)
-    if (!!nodes) {
-      ctx.postMessage({
-        isError: false,
-        nodes: nodes
-      });
-    }
+    const result = generateBlueprint(inputs, outputs, splitters)
+    ctx.postMessage({
+      isError: false,
+      nodes: result.nodes,
+      blueprint: result.blueprint
+    });
   } catch {
     ctx.postMessage({
-      isError: true,
-      nodes: []
+      isError: true
     })
   }
 

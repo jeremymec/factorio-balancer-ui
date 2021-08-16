@@ -11,7 +11,7 @@ export interface Payload {
 export interface Result {
   isError: boolean,
   nodes: FactorioNode[]
-  blueprint: Blueprint
+  blueprint: Blueprint | undefined
 }
 
 ctx.addEventListener('message', (event) => {

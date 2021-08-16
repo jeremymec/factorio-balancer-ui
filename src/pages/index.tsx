@@ -21,6 +21,7 @@ export default function Home() {
     useEffect(() => {
         workerRef.current = new Worker(new URL("../worker.ts", import.meta.url))
         workerRef.current.onmessage = (evt) => {
+            console.log("WORKER FINISHED, RESULT: ", evt)
             setGenerationResult(evt.data)
             setBlueprintLoading(false)
         }
@@ -32,6 +33,8 @@ export default function Home() {
 
     function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setGenerationResult(null)
+        setBlueprintLoading(true)
         const workerMessage: Payload = {
             inputs: Number(inputs),
             outputs: Number(outputs),
@@ -52,7 +55,7 @@ export default function Home() {
                         container
                         spacing={3}
                         alignItems="center"
-                        justify="center"
+                        justifyContent="center"
                     >
                         <form onSubmit={handleFormSubmit}>
                             <Grid style={{ display: "flex", justifyContent: "center" }}
@@ -76,17 +79,17 @@ export default function Home() {
                                 </Box>
                             </Grid>
                             <Grid container item style={{ overflow: "auto", maxWidth: 1000, backgroundColor: '#f0f0f0' }}>
-                                <Box>
-                                    {generationResult && (
-                                        blueprintLoading
-                                            ? <h1>Loading</h1>
-                                            : !generationResult?.isError
-                                                ? realisticRender
+                                    {blueprintLoading
+                                        ? <h1>Loading</h1>
+                                        : generationResult && (
+                                        !generationResult?.isError
+                                            ? realisticRender
+                                                ? generationResult.blueprint
                                                     ? <RenderedBlueprint blueprintData={generationResult.blueprint} isLoading={blueprintLoading}></RenderedBlueprint>
-                                                    : <RenderedGraph nodes={generationResult.nodes}></RenderedGraph>
-                                                : <h1>An error has occured</h1>
-                                    )}
-                                </Box>
+                                                    : <h1>No realistic render found.</h1>
+                                            : <RenderedGraph nodes={generationResult.nodes}></RenderedGraph>
+                                        : <h1>An error has occured</h1>)
+                                }
                             </Grid>
                         </form>
                     </Grid>

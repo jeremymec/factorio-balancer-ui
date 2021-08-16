@@ -1,12 +1,11 @@
 {
-  "name": "learn-starter",
+  "name": "factorio-balancer-ui",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "debug": "cross-env NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "next build && next export"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
